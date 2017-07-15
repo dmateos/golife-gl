@@ -12,8 +12,8 @@ func init() {
 }
 
 func setupProgram() {
-	vert_shader := CreateShader("myshader")
-	frag_shader := CreateShader("myshader-2")
+	vert_shader := CreateShader("vertex_shader.shader")
+	frag_shader := CreateShader("frag_shader.shader")
 	program := CreateProgram()
 
 	if !vert_shader.Status() || !frag_shader.Status() {

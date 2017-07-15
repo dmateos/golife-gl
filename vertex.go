@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type Vertex struct {
@@ -12,12 +12,13 @@ type Vertex struct {
 func CreateVertex(data []float32) *Vertex {
 	vertex := Vertex{}
 	vertex.bufferData = data
+	vertex.setupBuffer()
 	return &vertex
 }
 
-func (v *Vertex) SetupBuffer() {
+func (v *Vertex) setupBuffer() {
 	gl.GenVertexArrays(1, &v.vertexArrayID)
-	gl.BindVertexArray(v.vertexArrayID)
+	v.Bind()
 
 	gl.GenBuffers(1, &v.vertexBufferID)
 	gl.BindBuffer(gl.ARRAY_BUFFER, v.vertexBufferID)
@@ -27,4 +28,13 @@ func (v *Vertex) SetupBuffer() {
 		gl.Ptr(v.bufferData),
 		gl.STATIC_DRAW,
 	)
+	v.UnBind()
+}
+
+func (v *Vertex) Bind() {
+	gl.BindVertexArray(v.vertexArrayID)
+}
+
+func (v *Vertex) UnBind() {
+	gl.BindVertexArray(0)
 }

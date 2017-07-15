@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -42,6 +42,7 @@ func (s *Shader) Status() bool {
 		gl.GetShaderiv(s.shaderID, gl.INFO_LOG_LENGTH, &logLength)
 		logs := strings.Repeat("\x00", int(logLength+1))
 		gl.GetShaderInfoLog(s.shaderID, logLength, nil, gl.Str(logs))
+		log.Print(logs)
 		return false
 	}
 	return true

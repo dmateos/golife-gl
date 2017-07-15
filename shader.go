@@ -4,15 +4,21 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 type Shader struct {
 	shaderID uint32
 }
 
-func CreateShader(filePath string) *Shader {
+func CreateShader(filePath string, shaderType uint8) *Shader {
 	s := Shader{}
-	s.shaderID = gl.CreateShader(gl.VERTEX_SHADER)
+
+	if shaderType == 0 {
+		s.shaderID = gl.CreateShader(gl.VERTEX_SHADER)
+	} else if shaderType == 1 {
+		s.shaderID = gl.CreateShader(gl.FRAGMENT_SHADER)
+	}
 
 	shaderData, err := s.readFile(filePath)
 
@@ -32,6 +38,10 @@ func (s *Shader) Status() bool {
 	var status int32
 	gl.GetShaderiv(s.shaderID, gl.COMPILE_STATUS, &status)
 	if status == gl.FALSE {
+		var logLength int32
+		gl.GetShaderiv(s.shaderID, gl.INFO_LOG_LENGTH, &logLength)
+		logs := strings.Repeat("\x00", int(logLength+1))
+		gl.GetShaderInfoLog(s.shaderID, logLength, nil, gl.Str(logs))
 		return false
 	}
 	return true

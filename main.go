@@ -60,6 +60,8 @@ func main() {
 
 	program.Use()
 
+	camera := NewCamera()
+
 	vertexBufferData := []float32{
 		-1.0, -1.0, 0.0,
 		1.0, -1.0, 0.0,
@@ -72,6 +74,8 @@ func main() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		vertex.Bind()
+
+		program.SetUniform("camera", camera.GetMatrix())
 
 		gl.DrawArrays(gl.TRIANGLES, 0, 3)
 		//gl.DisableVertexAttribArray(0)

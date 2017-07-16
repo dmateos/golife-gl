@@ -44,8 +44,8 @@ func (p *Program) GetUniform(name string) uint32 {
 	return uniform
 }
 
-func (p *Program) SetUinform(name string, value mgl32.Mat4) {
-	gl.UniformMatrix4fv(p.GetUniform(name), 1, false, value)
+func (p *Program) SetUniform(name string, value mgl32.Mat4) {
+	gl.UniformMatrix4fv(int32(p.GetUniform(name)), 1, false, &value[0])
 }
 
 func (p *Program) Free() {

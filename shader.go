@@ -11,7 +11,7 @@ type Shader struct {
 	shaderID uint32
 }
 
-func CreateShader(filePath string, shaderType uint8) *Shader {
+func NewShader(filePath string, shaderType uint8) *Shader {
 	s := Shader{}
 
 	if shaderType == 0 {
@@ -49,7 +49,7 @@ func (s *Shader) Status() bool {
 }
 
 func (s *Shader) compileShader(shaderData string) {
-	shaderCode, freeShaderCode := gl.Strs(shaderData)
+	shaderCode, freeShaderCode := gl.Strs(shaderData + "\x00")
 	defer freeShaderCode()
 
 	gl.ShaderSource(s.shaderID, 1, shaderCode, nil)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
 	"log"
 	"strings"
 )
@@ -11,7 +12,7 @@ type Program struct {
 	shaders   []*Shader
 }
 
-func CreateProgram() *Program {
+func NewProgram() *Program {
 	p := Program{}
 	return &p
 }
@@ -31,6 +32,20 @@ func (p *Program) Compile() {
 
 func (p *Program) AddShader(shader *Shader) {
 	p.shaders = append(p.shaders, shader)
+}
+
+func (p *Program) GetAttribute(name string) uint32 {
+	attrib := uint32(gl.GetAttribLocation(p.programID, gl.Str(name+"\x00")))
+	return attrib
+}
+
+func (p *Program) GetUniform(name string) uint32 {
+	uniform := uint32(gl.GetUniformLocation(p.programID, gl.Str(name+"\x00")))
+	return uniform
+}
+
+func (p *Program) SetUinform(name string, value mgl32.Mat4) {
+	gl.UniformMatrix4fv(p.GetUniform(name), 1, false, value)
 }
 
 func (p *Program) Free() {

@@ -24,7 +24,7 @@ func main() {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-	window, err := glfw.CreateWindow(640, 480, "Testing", nil, nil)
+	window, err := glfw.CreateWindow(1289, 1024, "Testing", nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -38,8 +38,8 @@ func main() {
 	log.Println("OpenGL version", version)
 	gl.ClearColor(0.11, 0.545, 0.765, 0.0)
 
-	vert_shader := CreateShader("shaders/vertex_shader.shader", 0)
-	frag_shader := CreateShader("shaders/frag_shader.shader", 1)
+	vert_shader := NewShader("shaders/vertex_shader.shader", 0)
+	frag_shader := NewShader("shaders/frag_shader.shader", 1)
 
 	if !vert_shader.Status() {
 		log.Fatal("could not compile vertex shader")
@@ -49,7 +49,7 @@ func main() {
 		log.Fatal("could not compile fragment shader")
 	}
 
-	program := CreateProgram()
+	program := NewProgram()
 	program.AddShader(vert_shader)
 	program.AddShader(frag_shader)
 	program.Compile()
@@ -66,17 +66,15 @@ func main() {
 		0.0, 1.0, 0.0,
 	}
 
-	vertex := CreateVertex(vertexBufferData)
+	vertex := NewVertex(vertexBufferData, program)
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		vertex.Bind()
 
-		gl.EnableVertexAttribArray(0)
-		gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 		gl.DrawArrays(gl.TRIANGLES, 0, 3)
-		gl.DisableVertexAttribArray(0)
+		//gl.DisableVertexAttribArray(0)
 
 		vertex.UnBind()
 

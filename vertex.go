@@ -16,6 +16,14 @@ func NewVertex(data []float32, program *Program) *Vertex {
 	return &vertex
 }
 
+func (v *Vertex) Bind() {
+	gl.BindVertexArray(v.vertexArrayID)
+}
+
+func (v *Vertex) UnBind() {
+	gl.BindVertexArray(0)
+}
+
 func (v *Vertex) setupBuffer(program *Program) {
 	gl.GenVertexArrays(1, &v.vertexArrayID)
 	v.Bind()
@@ -39,12 +47,4 @@ func (v *Vertex) setupBuffer(program *Program) {
 		nil,
 	)
 	v.UnBind()
-}
-
-func (v *Vertex) Bind() {
-	gl.BindVertexArray(v.vertexArrayID)
-}
-
-func (v *Vertex) UnBind() {
-	gl.BindVertexArray(0)
 }

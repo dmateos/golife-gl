@@ -11,13 +11,26 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func main() {
+func onKey(w *glfw.Window, key glfw.Key, scancode int,
+	action glfw.Action, mods glfw.ModifierKey) {
+	if action == glfw.Press {
+		return
+	}
+
+	switch key {
+	case glfw.KeyW:
+	case glfw.KeyA:
+	case glfw.KeyS:
+	case glfw.KeyD:
+	}
+}
+
+func window_setup() *glfw.Window {
 	err := glfw.Init()
 
 	if err != nil {
 		panic(err)
 	}
-	defer glfw.Terminate()
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
@@ -29,6 +42,8 @@ func main() {
 		panic(err)
 	}
 
+	window.SetKeyCallback(onKey)
+
 	window.MakeContextCurrent()
 	err = gl.Init()
 	if err != nil {
@@ -37,6 +52,14 @@ func main() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	log.Println("OpenGL version", version)
 	gl.ClearColor(0.11, 0.545, 0.765, 0.0)
+
+	return window
+}
+
+func main() {
+	defer glfw.Terminate()
+
+	window := window_setup()
 
 	vert_shader := NewShader("shaders/vertex_shader.shader", 0)
 	frag_shader := NewShader("shaders/frag_shader.shader", 1)

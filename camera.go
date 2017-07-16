@@ -5,20 +5,15 @@ import (
 )
 
 type Camera struct {
-	position *mgl32.Vec3
+	pos *mgl32.Vec3
 }
 
 func NewCamera() *Camera {
 	c := Camera{}
-	c.position = &mgl32.Vec3{0, 0, 0}
+	c.pos = &mgl32.Vec3{0, -0.10, 0}
 	return &c
 }
 
 func (c *Camera) GetMatrix() [16]float32 {
-	return [16]float32{
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1,
-	}
+	return mgl32.Translate3D(c.pos.X(), c.pos.Y(), c.pos.Z())
 }

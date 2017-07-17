@@ -5,13 +5,15 @@ import (
 )
 
 type Vertex struct {
-	bufferData                    []float32
-	vertexArrayID, vertexBufferID uint32
+	bufferData                                         []float32
+	indexData                                          []int32
+	vertexArrayID, vertexBufferID, vertexIndexBufferID uint32
 }
 
-func NewVertex(data []float32, program *Program) *Vertex {
+func NewVertex(data []float32, indexData []int32, program *Program) *Vertex {
 	vertex := Vertex{}
 	vertex.bufferData = data
+	vertex.indexData = indexData
 	vertex.setupBuffer(program)
 	return &vertex
 }
@@ -34,6 +36,15 @@ func (v *Vertex) setupBuffer(program *Program) {
 		gl.ARRAY_BUFFER,
 		len(v.bufferData)*4,
 		gl.Ptr(v.bufferData),
+		gl.STATIC_DRAW,
+	)
+
+	gl.GenBuffers(1, &v.vertexIndexBufferID)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, v.vertexIndexBufferID)
+	gl.BufferData(
+		gl.ELEMENT_ARRAY_BUFFER,
+		len(v.indexData)*4,
+		gl.Ptr(v.indexData),
 		gl.STATIC_DRAW,
 	)
 

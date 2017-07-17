@@ -5,23 +5,32 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
 	"runtime"
+	"unsafe"
 )
 
 func init() {
 	runtime.LockOSThread()
 }
 
+var camera *Camera
+
 func onKey(w *glfw.Window, key glfw.Key, scancode int,
 	action glfw.Action, mods glfw.ModifierKey) {
-	if action == glfw.Press {
+	if action != glfw.Press {
 		return
 	}
 
 	switch key {
 	case glfw.KeyW:
-	case glfw.KeyA:
+		camera.Move(0, 0.00, 0.1)
 	case glfw.KeyS:
+		camera.Move(0, -0.00, -0.1)
+	case glfw.KeyA:
+		camera.Move(-0.1, 0, 0)
 	case glfw.KeyD:
+		camera.Move(0.1, 0, 0)
+	case glfw.KeyC:
+		camera.Move(0, 0, 0.1)
 	}
 }
 
@@ -37,7 +46,7 @@ func window_setup() *glfw.Window {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-	window, err := glfw.CreateWindow(1289, 1024, "Testing", nil, nil)
+	window, err := glfw.CreateWindow(1280, 1024, "Testing", nil, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +60,11 @@ func window_setup() *glfw.Window {
 	}
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	log.Println("OpenGL version", version)
+
 	gl.ClearColor(0.11, 0.545, 0.765, 0.0)
+	gl.Enable(gl.DEPTH_TEST)
+	//gl.Enable(gl.CULL_FACE)
+	gl.DepthFunc(gl.LESS)
 
 	return window
 }
@@ -83,24 +96,26 @@ func main() {
 
 	program.Use()
 
-	camera := NewCamera()
+	camera = NewCamera()
 
-	vertexBufferData := []float32{
-		-1.0, -1.0, 0.0,
-		1.0, -1.0, 0.0,
-		0.0, 1.0, 0.0,
-	}
-
-	vertex := NewVertex(vertexBufferData, program)
+	vertexData := NewObjFile()
+	vertexData.Read("Crate1.obj")
+	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		vertex.Bind()
 
-		program.SetUniform("camera", camera.GetMatrix())
+		program.SetUniform("camera", camera.GetViewMatrix())
+		program.SetUniform("perspective", camera.GetPerspectiveMatrix())
 
-		gl.DrawArrays(gl.TRIANGLES, 0, 3)
+		gl.DrawElements(
+			gl.TRIANGLES,
+			int32(len(vertexData.VertexIndex)),
+			gl.UNSIGNED_INT,
+			unsafe.Pointer(uintptr(0)),
+		)
 		//gl.DisableVertexAttribArray(0)
 
 		vertex.UnBind()

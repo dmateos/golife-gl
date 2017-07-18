@@ -22,18 +22,20 @@ func onKey(w *glfw.Window, key glfw.Key, scancode int,
 
 	switch key {
 	case glfw.KeyW:
-		camera.Move(0, 0.00, 0.4)
+		camera.OffsetPosition(camera.Forward(-0.5))
 	case glfw.KeyS:
-		camera.Move(0, -0.00, -0.4)
+		camera.OffsetPosition(camera.Forward(0.5))
 	case glfw.KeyA:
-		camera.Move(0.4, 0, 0)
+		camera.OffsetPosition(camera.Right(0.5))
 	case glfw.KeyD:
-		camera.Move(-0.4, 0, 0)
-	case glfw.KeyC:
-		camera.Move(0, -0.4, 0.0)
-	case glfw.KeyV:
-		camera.Move(0, 0.4, 0.0)
+		camera.OffsetPosition(camera.Right(-0.5))
 	}
+}
+
+func handleMouse(w *glfw.Window) {
+	x, y := w.GetCursorPos()
+	camera.OffsetOrientation(float32(y)*0.01, float32(x)*0.01)
+	w.SetCursorPos(0.0, 0.0)
 }
 
 func window_setup() *glfw.Window {
@@ -53,6 +55,7 @@ func window_setup() *glfw.Window {
 		panic(err)
 	}
 
+	window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
 	window.SetKeyCallback(onKey)
 
 	window.MakeContextCurrent()
@@ -98,13 +101,10 @@ func main() {
 	}
 
 	program.Use()
-
 	camera = NewCamera()
 
 	vertexData := NewObjFile()
-	//vertexData.Read("obj/Crate1.obj")
 	vertexData.Read("obj/simple_man.obj")
-	//vertexData.Read("obj/monkey.obj")
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
 
 	for !window.ShouldClose() {
@@ -127,6 +127,7 @@ func main() {
 
 		window.SwapBuffers()
 		glfw.PollEvents()
+		handleMouse(window)
 	}
 
 	vert_shader.Free()

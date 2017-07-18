@@ -34,8 +34,7 @@ func (o *ObjFile) Read(filename string) {
 			o.Vertex = append(o.Vertex, z)
 		} else if strings.HasPrefix(line, "f ") {
 			var vix, viy, viz, vnx, vny, vnz uint32
-			fmt.Sscanf(line,
-				"f %d//%d %d//%d %d//%d",
+			fmt.Sscanf(line, "f %d//%d %d//%d %d//%d",
 				&vix, &vnx, &viy, &vny, &viz, &vnz,
 			)
 			o.VertexIndex = append(o.VertexIndex, vix-1)

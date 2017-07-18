@@ -13,13 +13,8 @@ func init() {
 
 var camera *Camera
 
-func onKey(w *glfw.Window, key glfw.Key, scancode int,
-	action glfw.Action, mods glfw.ModifierKey) {
-	//if action != glfw.Press {
-	//		return
-	//	}
-
-	switch key {
+func onKey(w *glfw.Window, k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey) {
+	switch k {
 	case glfw.KeyW:
 		camera.OffsetPosition(camera.Forward(-0.5))
 	case glfw.KeyS:
@@ -74,13 +69,12 @@ func window_setup() *glfw.Window {
 	return window
 }
 
-func main() {
-	defer glfw.Terminate()
-
-	window := window_setup()
-
+func make_basic_gl_shader_program() *Program {
 	vert_shader := NewShader("shaders/vertex_shader.shader", 0)
 	frag_shader := NewShader("shaders/frag_shader.shader", 1)
+
+	defer vert_shader.Free()
+	defer frag_shader.Free()
 
 	if !vert_shader.Status() {
 		log.Fatal("could not compile vertex shader")
@@ -99,12 +93,21 @@ func main() {
 		log.Fatal("Could not compile GL program")
 	}
 
-	program.Use()
-	camera = NewCamera()
+	return program
+}
 
+func main() {
+	defer glfw.Terminate()
+
+	window := window_setup()
+	program := make_basic_gl_shader_program()
+	camera = NewCamera()
 	vertexData := NewObjFile()
+
 	vertexData.Read("obj/simple_man.obj")
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
+
+	program.Use()
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -113,7 +116,6 @@ func main() {
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("perspective", camera.GetPerspectiveMatrix())
 		vertex.Draw()
-		//gl.DisableVertexAttribArray(0)
 		vertex.UnBind()
 
 		window.SwapBuffers()
@@ -121,7 +123,5 @@ func main() {
 		handleMouse(window)
 	}
 
-	vert_shader.Free()
-	frag_shader.Free()
 	program.Free()
 }

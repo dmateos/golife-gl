@@ -25,6 +25,7 @@ func (v *Vertex) Bind() {
 
 func (v *Vertex) UnBind() {
 	gl.BindVertexArray(0)
+	//gl.DisableVertexAttribArray(0)
 }
 
 func (v *Vertex) setupBuffer(program *Program) {

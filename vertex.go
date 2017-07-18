@@ -6,11 +6,11 @@ import (
 
 type Vertex struct {
 	bufferData                                         []float32
-	indexData                                          []int32
+	indexData                                          []uint32
 	vertexArrayID, vertexBufferID, vertexIndexBufferID uint32
 }
 
-func NewVertex(data []float32, indexData []int32, program *Program) *Vertex {
+func NewVertex(data []float32, indexData []uint32, program *Program) *Vertex {
 	vertex := Vertex{}
 	vertex.bufferData = data
 	vertex.indexData = indexData

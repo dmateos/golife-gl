@@ -22,15 +22,17 @@ func onKey(w *glfw.Window, key glfw.Key, scancode int,
 
 	switch key {
 	case glfw.KeyW:
-		camera.Move(0, 0.00, 0.1)
+		camera.Move(0, 0.00, 0.4)
 	case glfw.KeyS:
-		camera.Move(0, -0.00, -0.1)
+		camera.Move(0, -0.00, -0.4)
 	case glfw.KeyA:
-		camera.Move(-0.1, 0, 0)
+		camera.Move(0.4, 0, 0)
 	case glfw.KeyD:
-		camera.Move(0.1, 0, 0)
+		camera.Move(-0.4, 0, 0)
 	case glfw.KeyC:
-		camera.Move(0, 0, 0.1)
+		camera.Move(0, -0.4, 0.0)
+	case glfw.KeyV:
+		camera.Move(0, 0.4, 0.0)
 	}
 }
 
@@ -63,8 +65,9 @@ func window_setup() *glfw.Window {
 
 	gl.ClearColor(0.11, 0.545, 0.765, 0.0)
 	gl.Enable(gl.DEPTH_TEST)
-	//gl.Enable(gl.CULL_FACE)
+	gl.Enable(gl.CULL_FACE)
 	gl.DepthFunc(gl.LESS)
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	return window
 }
@@ -99,7 +102,9 @@ func main() {
 	camera = NewCamera()
 
 	vertexData := NewObjFile()
-	vertexData.Read("Crate1.obj")
+	//vertexData.Read("obj/Crate1.obj")
+	vertexData.Read("obj/simple_man.obj")
+	//vertexData.Read("obj/monkey.obj")
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
 
 	for !window.ShouldClose() {

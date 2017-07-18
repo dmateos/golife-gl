@@ -8,7 +8,7 @@ import (
 
 type ObjFile struct {
 	Vertex      []float32
-	VertexIndex []int32
+	VertexIndex []uint32
 }
 
 func NewObjFile() *ObjFile {
@@ -33,15 +33,14 @@ func (o *ObjFile) Read(filename string) {
 			o.Vertex = append(o.Vertex, y)
 			o.Vertex = append(o.Vertex, z)
 		} else if strings.HasPrefix(line, "f ") {
-			var vix, viy, viz, vnx, vny, vnz int32
+			var vix, viy, viz, vnx, vny, vnz uint32
 			fmt.Sscanf(line,
-				"f %d//%d %d//%d %d///%d",
+				"f %d//%d %d//%d %d//%d",
 				&vix, &vnx, &viy, &vny, &viz, &vnz,
 			)
-			o.VertexIndex = append(o.VertexIndex, vix)
-			o.VertexIndex = append(o.VertexIndex, viy)
-			o.VertexIndex = append(o.VertexIndex, viz)
+			o.VertexIndex = append(o.VertexIndex, vix-1)
+			o.VertexIndex = append(o.VertexIndex, viy-1)
+			o.VertexIndex = append(o.VertexIndex, viz-1)
 		}
 	}
-	fmt.Printf("%d\n", len(o.Vertex))
 }

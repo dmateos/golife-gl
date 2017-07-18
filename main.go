@@ -97,8 +97,6 @@ func make_basic_gl_shader_program() *Program {
 }
 
 func main() {
-	defer glfw.Terminate()
-
 	window := window_setup()
 	program := make_basic_gl_shader_program()
 	camera = NewCamera()
@@ -106,6 +104,9 @@ func main() {
 
 	vertexData.Read("obj/simple_man.obj")
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
+
+	defer glfw.Terminate()
+	defer program.Free()
 
 	program.Use()
 
@@ -122,6 +123,4 @@ func main() {
 		glfw.PollEvents()
 		handleMouse(window)
 	}
-
-	program.Free()
 }

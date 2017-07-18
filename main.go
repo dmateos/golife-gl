@@ -70,23 +70,23 @@ func window_setup() *glfw.Window {
 }
 
 func make_basic_gl_shader_program() *Program {
-	vert_shader := NewShader("shaders/vertex_shader.shader", 0)
-	frag_shader := NewShader("shaders/frag_shader.shader", 1)
+	vertShader := NewShader("shaders/vertex_shader.shader", 0)
+	fragShader := NewShader("shaders/frag_shader.shader", 1)
 
-	defer vert_shader.Free()
-	defer frag_shader.Free()
+	defer vertShader.Free()
+	defer fragShader.Free()
 
-	if !vert_shader.Status() {
+	if !vertShader.Status() {
 		log.Fatal("could not compile vertex shader")
 	}
 
-	if !frag_shader.Status() {
+	if !fragShader.Status() {
 		log.Fatal("could not compile fragment shader")
 	}
 
 	program := NewProgram()
-	program.AddShader(vert_shader)
-	program.AddShader(frag_shader)
+	program.AddShader(vertShader)
+	program.AddShader(fragShader)
 	program.Compile()
 
 	if !program.Status() {
@@ -112,10 +112,10 @@ func main() {
 
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
-		vertex.Bind()
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("perspective", camera.GetPerspectiveMatrix())
+
+		vertex.Bind()
 		vertex.Draw()
 		vertex.UnBind()
 

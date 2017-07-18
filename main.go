@@ -102,7 +102,7 @@ func main() {
 	camera = NewCamera()
 	vertexData := NewObjFile()
 
-	vertexData.Read("obj/simple_man.obj")
+	vertexData.ParseFile("obj/simple_man.obj")
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
 
 	defer glfw.Terminate()

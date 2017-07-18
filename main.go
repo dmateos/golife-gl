@@ -16,9 +16,9 @@ var camera *Camera
 
 func onKey(w *glfw.Window, key glfw.Key, scancode int,
 	action glfw.Action, mods glfw.ModifierKey) {
-	if action != glfw.Press {
-		return
-	}
+	//if action != glfw.Press {
+	//		return
+	//	}
 
 	switch key {
 	case glfw.KeyW:

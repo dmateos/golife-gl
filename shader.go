@@ -14,19 +14,20 @@ type Shader struct {
 func NewShader(filePath string, shaderType uint8) *Shader {
 	s := Shader{}
 
-	if shaderType == 0 {
+	switch shaderType {
+	case 0:
 		s.shaderID = gl.CreateShader(gl.VERTEX_SHADER)
-	} else if shaderType == 1 {
+	case 1:
 		s.shaderID = gl.CreateShader(gl.FRAGMENT_SHADER)
 	}
 
-	shaderData, err := s.readFile(filePath)
+	shaderData, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
 		log.Fatal("could not read shader file")
 	}
 
-	s.compileShader(shaderData)
+	s.compileShader(string(shaderData))
 	return &s
 }
 
@@ -54,14 +55,4 @@ func (s *Shader) compileShader(shaderData string) {
 
 	gl.ShaderSource(s.shaderID, 1, shaderCode, nil)
 	gl.CompileShader(s.shaderID)
-}
-
-func (s *Shader) readFile(filename string) (string, error) {
-	b, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		return "", err
-	}
-
-	return string(b), nil
 }

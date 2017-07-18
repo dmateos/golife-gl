@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/go-gl/mathgl/mgl32"
 	"log"
 	"strings"
 )
@@ -44,7 +43,7 @@ func (p *Program) GetUniform(name string) uint32 {
 	return uniform
 }
 
-func (p *Program) SetUniform(name string, value mgl32.Mat4) {
+func (p *Program) SetUniform(name string, value [16]float32) {
 	gl.UniformMatrix4fv(int32(p.GetUniform(name)), 1, false, &value[0])
 }
 

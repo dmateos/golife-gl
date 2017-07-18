@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"unsafe"
 )
 
 type Vertex struct {
@@ -58,4 +59,13 @@ func (v *Vertex) setupBuffer(program *Program) {
 		nil,
 	)
 	v.UnBind()
+}
+
+func (v *Vertex) Draw() {
+	gl.DrawElements(
+		gl.TRIANGLES,
+		int32(len(v.indexData)),
+		gl.UNSIGNED_INT,
+		unsafe.Pointer(uintptr(0)),
+	)
 }

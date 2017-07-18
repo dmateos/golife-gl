@@ -5,7 +5,6 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
 	"runtime"
-	"unsafe"
 )
 
 func init() {
@@ -111,18 +110,10 @@ func main() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		vertex.Bind()
-
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("perspective", camera.GetPerspectiveMatrix())
-
-		gl.DrawElements(
-			gl.TRIANGLES,
-			int32(len(vertexData.VertexIndex)),
-			gl.UNSIGNED_INT,
-			unsafe.Pointer(uintptr(0)),
-		)
+		vertex.Draw()
 		//gl.DisableVertexAttribArray(0)
-
 		vertex.UnBind()
 
 		window.SwapBuffers()

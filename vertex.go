@@ -43,13 +43,7 @@ func (v *Vertex) setupBuffer(program *Program) {
 	)
 
 	gl.EnableVertexAttribArray(program.GetAttribute("vp"))
-	gl.VertexAttribPointer(program.GetAttribute("vp"),
-		3,
-		gl.FLOAT,
-		false,
-		0,
-		nil,
-	)
+	gl.VertexAttribPointer(program.GetAttribute("vp"), 3, gl.FLOAT, false, 0, nil)
 
 	// Normal Buffer + Attrib pointer to goto shader.
 	gl.GenBuffers(1, &v.normalBufferID)
@@ -61,13 +55,7 @@ func (v *Vertex) setupBuffer(program *Program) {
 	)
 
 	gl.EnableVertexAttribArray(program.GetAttribute("nm"))
-	gl.VertexAttribPointer(program.GetAttribute("nm"),
-		3,
-		gl.FLOAT,
-		false,
-		0,
-		nil,
-	)
+	gl.VertexAttribPointer(program.GetAttribute("nm"), 3, gl.FLOAT, false, 0, nil)
 
 	// Vertex index buffer
 	gl.GenBuffers(1, &v.vertexIndexBufferID)
@@ -79,9 +67,9 @@ func (v *Vertex) setupBuffer(program *Program) {
 	)
 
 	//Cleanup
+	v.UnBind()
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
-	v.UnBind()
 }
 
 func (v *Vertex) Draw() {

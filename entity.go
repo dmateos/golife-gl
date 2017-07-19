@@ -22,9 +22,7 @@ func (e *Entity) GetTranslationMatrix() mgl32.Mat4 {
 
 func (e *Entity) Draw(program *Program) {
 	e.vertex.Bind()
-
 	program.SetUniform("transform", e.GetTranslationMatrix())
 	e.vertex.Draw()
-
 	e.vertex.UnBind()
 }

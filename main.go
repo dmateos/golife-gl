@@ -100,10 +100,16 @@ func main() {
 	window := window_setup()
 	program := make_basic_gl_shader_program()
 	camera = NewCamera()
-	vertexData := NewObjFile()
 
+	vertexData := NewObjFile()
 	vertexData.ParseFile("obj/simple_man.obj")
+
 	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
+
+	entity := NewEntity([3]float32{0, 0, 0}, vertex)
+	entity_two := NewEntity([3]float32{20.0, 0.0, 0.0}, vertex)
+	entity_three := NewEntity([3]float32{0.0, 0.0, 20.0}, vertex)
+	entity_four := NewEntity([3]float32{20.0, 0.0, 20.0}, vertex)
 
 	defer glfw.Terminate()
 	defer program.Free()
@@ -113,11 +119,12 @@ func main() {
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		program.SetUniform("camera", camera.GetViewMatrix())
-		program.SetUniform("perspective", camera.GetPerspectiveMatrix())
+		program.SetUniform("projection", camera.GetPerspectiveMatrix())
 
-		vertex.Bind()
-		vertex.Draw()
-		vertex.UnBind()
+		entity.Draw(program)
+		entity_two.Draw(program)
+		entity_three.Draw(program)
+		entity_four.Draw(program)
 
 		window.SwapBuffers()
 		glfw.PollEvents()

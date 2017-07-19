@@ -103,7 +103,7 @@ func main() {
 	camera = NewCamera()
 
 	vertexDataMan := NewObjFile()
-	vertexDataMan.ParseFile("obj/simple_man.obj")
+	vertexDataMan.ParseFile("obj/model.obj")
 	vertexMan := NewVertex(vertexDataMan.Vertex, vertexDataMan.Normals, vertexDataMan.VertexIndex, program)
 
 	vertexDataPlane := NewObjFile()

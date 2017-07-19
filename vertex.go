@@ -26,13 +26,13 @@ func (v *Vertex) Bind() {
 
 func (v *Vertex) UnBind() {
 	gl.BindVertexArray(0)
-	//gl.DisableVertexAttribArray(0)
 }
 
 func (v *Vertex) setupBuffer(program *Program) {
 	gl.GenVertexArrays(1, &v.vertexArrayID)
 	v.Bind()
 
+	// Vertex Buffer + Attrib pointer to goto shader.
 	gl.GenBuffers(1, &v.vertexBufferID)
 	gl.BindBuffer(gl.ARRAY_BUFFER, v.vertexBufferID)
 	gl.BufferData(
@@ -51,10 +51,10 @@ func (v *Vertex) setupBuffer(program *Program) {
 		nil,
 	)
 
+	// Normal Buffer + Attrib pointer to goto shader.
 	gl.GenBuffers(1, &v.normalBufferID)
 	gl.BindBuffer(gl.ARRAY_BUFFER, v.normalBufferID)
-	gl.BufferData(
-		gl.ARRAY_BUFFER,
+	gl.BufferData(gl.ARRAY_BUFFER,
 		len(v.normalData)*4,
 		gl.Ptr(v.normalData),
 		gl.STATIC_DRAW,
@@ -69,21 +69,23 @@ func (v *Vertex) setupBuffer(program *Program) {
 		nil,
 	)
 
+	// Vertex index buffer
 	gl.GenBuffers(1, &v.vertexIndexBufferID)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, v.vertexIndexBufferID)
-	gl.BufferData(
-		gl.ELEMENT_ARRAY_BUFFER,
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER,
 		len(v.indexData)*4,
 		gl.Ptr(v.indexData),
 		gl.STATIC_DRAW,
 	)
 
+	//Cleanup
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
 	v.UnBind()
 }
 
 func (v *Vertex) Draw() {
-	gl.DrawElements(
-		gl.TRIANGLES,
+	gl.DrawElements(gl.TRIANGLES,
 		int32(len(v.indexData)),
 		gl.UNSIGNED_INT,
 		unsafe.Pointer(uintptr(0)),

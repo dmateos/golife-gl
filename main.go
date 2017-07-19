@@ -23,6 +23,8 @@ func onKey(w *glfw.Window, k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
 		camera.OffsetPosition(camera.Right(0.5))
 	case glfw.KeyD:
 		camera.OffsetPosition(camera.Right(-0.5))
+	case glfw.KeyC:
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	}
 }
 
@@ -64,7 +66,6 @@ func window_setup() *glfw.Window {
 	gl.Enable(gl.DEPTH_TEST)
 	gl.Enable(gl.CULL_FACE)
 	gl.DepthFunc(gl.LESS)
-	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	return window
 }
@@ -103,13 +104,18 @@ func main() {
 
 	vertexDataMan := NewObjFile()
 	vertexDataMan.ParseFile("obj/simple_man.obj")
-	vertexMan := NewVertex(vertexDataMan.Vertex, vertexDataMan.VertexIndex, program)
+	vertexMan := NewVertex(vertexDataMan.Vertex, vertexDataMan.Normals, vertexDataMan.VertexIndex, program)
 
 	vertexDataPlane := NewObjFile()
 	vertexDataPlane.ParseFile("obj/grid.obj")
-	vertexPlane := NewVertex(vertexDataPlane.Vertex, vertexDataPlane.VertexIndex, program)
+	vertexPlane := NewVertex(vertexDataPlane.Vertex, vertexDataPlane.Normals, vertexDataPlane.VertexIndex, program)
+
+	vertexDataMonk := NewObjFile()
+	vertexDataMonk.ParseFile("obj/monkey.obj")
+	vertexMonk := NewVertex(vertexDataMonk.Vertex, vertexDataMonk.Normals, vertexDataMonk.VertexIndex, program)
 
 	planeEntity := NewEntity([3]float32{0, 0, 0}, vertexPlane)
+	monkEntity := NewEntity([3]float32{10, 20.0, 10.0}, vertexMonk)
 	entity := NewEntity([3]float32{0, 0, 0}, vertexMan)
 	entity_two := NewEntity([3]float32{20.0, 0.0, 0.0}, vertexMan)
 	entity_three := NewEntity([3]float32{0.0, 0.0, 20.0}, vertexMan)
@@ -126,6 +132,7 @@ func main() {
 		program.SetUniform("projection", camera.GetPerspectiveMatrix())
 
 		planeEntity.Draw(program)
+		monkEntity.Draw(program)
 		entity.Draw(program)
 		entity_two.Draw(program)
 		entity_three.Draw(program)

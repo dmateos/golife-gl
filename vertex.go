@@ -6,14 +6,15 @@ import (
 )
 
 type Vertex struct {
-	bufferData                                         []float32
-	indexData                                          []uint32
-	vertexArrayID, vertexBufferID, vertexIndexBufferID uint32
+	bufferData, normalData                                             []float32
+	indexData                                                          []uint32
+	vertexArrayID, vertexBufferID, normalBufferID, vertexIndexBufferID uint32
 }
 
-func NewVertex(data []float32, indexData []uint32, program *Program) *Vertex {
+func NewVertex(data, nData []float32, indexData []uint32, program *Program) *Vertex {
 	vertex := Vertex{}
 	vertex.bufferData = data
+	vertex.normalData = nData
 	vertex.indexData = indexData
 	vertex.setupBuffer(program)
 	return &vertex
@@ -41,6 +42,33 @@ func (v *Vertex) setupBuffer(program *Program) {
 		gl.STATIC_DRAW,
 	)
 
+	gl.EnableVertexAttribArray(program.GetAttribute("vp"))
+	gl.VertexAttribPointer(program.GetAttribute("vp"),
+		3,
+		gl.FLOAT,
+		false,
+		0,
+		nil,
+	)
+
+	gl.GenBuffers(1, &v.normalBufferID)
+	gl.BindBuffer(gl.ARRAY_BUFFER, v.normalBufferID)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		len(v.normalData)*4,
+		gl.Ptr(v.normalData),
+		gl.STATIC_DRAW,
+	)
+
+	gl.EnableVertexAttribArray(program.GetAttribute("nm"))
+	gl.VertexAttribPointer(program.GetAttribute("nm"),
+		3,
+		gl.FLOAT,
+		false,
+		0,
+		nil,
+	)
+
 	gl.GenBuffers(1, &v.vertexIndexBufferID)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, v.vertexIndexBufferID)
 	gl.BufferData(
@@ -50,15 +78,6 @@ func (v *Vertex) setupBuffer(program *Program) {
 		gl.STATIC_DRAW,
 	)
 
-	gl.EnableVertexAttribArray(program.GetAttribute("vp"))
-	gl.VertexAttribPointer(
-		program.GetAttribute("vp"),
-		3,
-		gl.FLOAT,
-		false,
-		0,
-		nil,
-	)
 	v.UnBind()
 }
 

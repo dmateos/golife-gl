@@ -1,10 +1,11 @@
 #version 330 core
 
 // Ouput data
+in vec3 nm_out;
 out vec3 color;
 
 void main()
 {
   // Output color = red 
-  color = vec3(0.81,0,0.058);
+  color = nm_out;
 }

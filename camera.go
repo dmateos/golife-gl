@@ -50,5 +50,5 @@ func (c *Camera) GetViewMatrix() mgl32.Mat4 {
 }
 
 func (c *Camera) GetPerspectiveMatrix() mgl32.Mat4 {
-	return mgl32.Perspective(45.0, 1280/1024, 0.01, 100.0)
+	return mgl32.Perspective(45.0, 1280/1024, 0.01, 1000.0)
 }

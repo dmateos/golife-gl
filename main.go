@@ -101,15 +101,19 @@ func main() {
 	program := make_basic_gl_shader_program()
 	camera = NewCamera()
 
-	vertexData := NewObjFile()
-	vertexData.ParseFile("obj/simple_man.obj")
+	vertexDataMan := NewObjFile()
+	vertexDataMan.ParseFile("obj/simple_man.obj")
+	vertexMan := NewVertex(vertexDataMan.Vertex, vertexDataMan.VertexIndex, program)
 
-	vertex := NewVertex(vertexData.Vertex, vertexData.VertexIndex, program)
+	vertexDataPlane := NewObjFile()
+	vertexDataPlane.ParseFile("obj/grid.obj")
+	vertexPlane := NewVertex(vertexDataPlane.Vertex, vertexDataPlane.VertexIndex, program)
 
-	entity := NewEntity([3]float32{0, 0, 0}, vertex)
-	entity_two := NewEntity([3]float32{20.0, 0.0, 0.0}, vertex)
-	entity_three := NewEntity([3]float32{0.0, 0.0, 20.0}, vertex)
-	entity_four := NewEntity([3]float32{20.0, 0.0, 20.0}, vertex)
+	planeEntity := NewEntity([3]float32{0, 0, 0}, vertexPlane)
+	entity := NewEntity([3]float32{0, 0, 0}, vertexMan)
+	entity_two := NewEntity([3]float32{20.0, 0.0, 0.0}, vertexMan)
+	entity_three := NewEntity([3]float32{0.0, 0.0, 20.0}, vertexMan)
+	entity_four := NewEntity([3]float32{20.0, 0.0, 20.0}, vertexMan)
 
 	defer glfw.Terminate()
 	defer program.Free()
@@ -121,6 +125,7 @@ func main() {
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("projection", camera.GetPerspectiveMatrix())
 
+		planeEntity.Draw(program)
 		entity.Draw(program)
 		entity_two.Draw(program)
 		entity_three.Draw(program)

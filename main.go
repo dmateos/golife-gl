@@ -34,42 +34,6 @@ func handleMouse(w *glfw.Window) {
 	w.SetCursorPos(0.0, 0.0)
 }
 
-func window_setup() *glfw.Window {
-	err := glfw.Init()
-
-	if err != nil {
-		panic(err)
-	}
-	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-
-	window, err := glfw.CreateWindow(1280, 1024, "Testing", nil, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
-	window.SetKeyCallback(onKey)
-
-	window.MakeContextCurrent()
-	err = gl.Init()
-	if err != nil {
-		panic(err)
-	}
-	version := gl.GoStr(gl.GetString(gl.VERSION))
-	log.Println("OpenGL version", version)
-
-	gl.ClearColor(0.11, 0.545, 0.765, 0.0)
-	gl.Enable(gl.DEPTH_TEST)
-	gl.Enable(gl.CULL_FACE)
-	gl.DepthFunc(gl.LESS)
-
-	return window
-}
-
 func make_basic_gl_shader_program() *Program {
 	vertShader := NewShader("shaders/vertex_shader.shader", 0)
 	fragShader := NewShader("shaders/frag_shader.shader", 1)
@@ -98,9 +62,11 @@ func make_basic_gl_shader_program() *Program {
 }
 
 func main() {
-	window := window_setup()
+	window := NewWindow()
 	program := make_basic_gl_shader_program()
 	camera = NewCamera()
+
+	window.GetWindow().SetKeyCallback(onKey)
 
 	vertexDataMan := NewObjFile()
 	vertexDataMan.ParseFile("obj/model.obj")
@@ -127,7 +93,7 @@ func main() {
 	program.Use()
 
 	for !window.ShouldClose() {
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		window.Clear()
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("projection", camera.GetPerspectiveMatrix())
 
@@ -138,8 +104,8 @@ func main() {
 		entity_three.Draw(program)
 		entity_four.Draw(program)
 
-		window.SwapBuffers()
+		window.Swap()
 		glfw.PollEvents()
-		handleMouse(window)
+		handleMouse(window.GetWindow())
 	}
 }

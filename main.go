@@ -70,22 +70,24 @@ func main() {
 
 	vertexDataMan := NewObjFile()
 	vertexDataMan.ParseFile("obj/model.obj")
-	vertexMan := NewVertex(vertexDataMan.Vertex, vertexDataMan.Normals, vertexDataMan.VertexIndex, program)
-
-	vertexDataPlane := NewObjFile()
-	vertexDataPlane.ParseFile("obj/grid.obj")
-	vertexPlane := NewVertex(vertexDataPlane.Vertex, vertexDataPlane.Normals, vertexDataPlane.VertexIndex, program)
-
-	vertexDataMonk := NewObjFile()
-	vertexDataMonk.ParseFile("obj/monkey.obj")
-	vertexMonk := NewVertex(vertexDataMonk.Vertex, vertexDataMonk.Normals, vertexDataMonk.VertexIndex, program)
-
-	planeEntity := NewEntity([3]float32{0, 0, 0}, vertexPlane)
-	monkEntity := NewEntity([3]float32{10, 20.0, 10.0}, vertexMonk)
+	vertexMan := NewVertex(vertexDataMan.Vertex,
+		vertexDataMan.Normals, vertexDataMan.VertexIndex, program,
+	)
 	entity := NewEntity([3]float32{0, 0, 0}, vertexMan)
 	entity_two := NewEntity([3]float32{20.0, 0.0, 0.0}, vertexMan)
 	entity_three := NewEntity([3]float32{0.0, 0.0, 20.0}, vertexMan)
 	entity_four := NewEntity([3]float32{20.0, 0.0, 20.0}, vertexMan)
+
+	vertexDataMonk := NewObjFile()
+	vertexDataMonk.ParseFile("obj/monkey.obj")
+	vertexMonk := NewVertex(vertexDataMonk.Vertex,
+		vertexDataMonk.Normals, vertexDataMonk.VertexIndex, program,
+	)
+	monkEntity := NewEntity([3]float32{10, 20.0, 10.0}, vertexMonk)
+
+	plane := NewPlane()
+	plane.LoadPlane(program)
+	plane.Perlin(program)
 
 	defer glfw.Terminate()
 	defer program.Free()
@@ -97,7 +99,7 @@ func main() {
 		program.SetUniform("camera", camera.GetViewMatrix())
 		program.SetUniform("projection", camera.GetPerspectiveMatrix())
 
-		planeEntity.Draw(program)
+		plane.Draw(program)
 		monkEntity.Draw(program)
 		entity.Draw(program)
 		entity_two.Draw(program)

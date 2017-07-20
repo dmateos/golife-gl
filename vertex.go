@@ -16,7 +16,7 @@ func NewVertex(data, nData []float32, indexData []uint32, program *Program) *Ver
 	vertex.bufferData = data
 	vertex.normalData = nData
 	vertex.indexData = indexData
-	vertex.setupBuffer(program)
+	vertex.SetupBuffer(program)
 	return &vertex
 }
 
@@ -28,12 +28,22 @@ func (v *Vertex) UnBind() {
 	gl.BindVertexArray(0)
 }
 
-func (v *Vertex) setupBuffer(program *Program) {
+func (v *Vertex) SetupBuffer(program *Program) {
+	v.setupBuffer(program, true)
+}
+
+func (v *Vertex) RefreshBuffer(program *Program) {
+	v.setupBuffer(program, false)
+}
+
+func (v *Vertex) setupBuffer(program *Program, newBuffers bool) {
 	gl.GenVertexArrays(1, &v.vertexArrayID)
 	v.Bind()
 
 	// Vertex Buffer + Attrib pointer to goto shader.
-	gl.GenBuffers(1, &v.vertexBufferID)
+	if newBuffers {
+		gl.GenBuffers(1, &v.vertexBufferID)
+	}
 	gl.BindBuffer(gl.ARRAY_BUFFER, v.vertexBufferID)
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -46,7 +56,9 @@ func (v *Vertex) setupBuffer(program *Program) {
 	gl.VertexAttribPointer(program.GetAttribute("vp"), 3, gl.FLOAT, false, 0, nil)
 
 	// Normal Buffer + Attrib pointer to goto shader.
-	gl.GenBuffers(1, &v.normalBufferID)
+	if newBuffers {
+		gl.GenBuffers(1, &v.normalBufferID)
+	}
 	gl.BindBuffer(gl.ARRAY_BUFFER, v.normalBufferID)
 	gl.BufferData(gl.ARRAY_BUFFER,
 		len(v.normalData)*4,
@@ -58,7 +70,9 @@ func (v *Vertex) setupBuffer(program *Program) {
 	gl.VertexAttribPointer(program.GetAttribute("nm"), 3, gl.FLOAT, false, 0, nil)
 
 	// Vertex index buffer
-	gl.GenBuffers(1, &v.vertexIndexBufferID)
+	if newBuffers {
+		gl.GenBuffers(1, &v.vertexIndexBufferID)
+	}
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, v.vertexIndexBufferID)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER,
 		len(v.indexData)*4,

@@ -33,10 +33,9 @@ func (p *Plane) Draw(program *Program) {
 func (p *Plane) Perlin(program *Program) {
 	noise := opensimplex.New()
 
-	for x := 1; x < 300; x += 3 {
+	for x := 1; x < 30000; x += 3 {
 		thing := p.entity.GetVertexData()
-		//thing[x] = thing[x] * rand.Float32() * 20
-		thing[x] = float32(noise.Eval3(float64(thing[x-1]), float64(thing[x]), float64(thing[x+1]))) * 20
+		thing[x] = float32(noise.Eval2(0.0, float64(x))) * 5
 	}
 
 	p.entity.vertex.RefreshBuffer(program)
